@@ -1,0 +1,7 @@
+pytest
+pytest-xdist
+pytest-order
+pyjavaproperties
+openxl
+playwright
+allure-pytest
