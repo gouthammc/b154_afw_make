@@ -1,7 +1,3 @@
-name: Run Playwright Pytest
-
-on: [push]
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,31 +12,29 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install allure-pytest pytest-xdist
 
       - name: Install Playwright browsers
         run: playwright install chromium --with-deps
 
-      # 👉 Run tests with Allure results
       - name: Run tests
-        run: pytest -vs --alluredir=allure-results
+        run: pytest -n auto --alluredir=allure-results
 
-      # 👉 Install Allure CLI (Java-based)
       - name: Install Allure
         run: |
           sudo apt-get update
           sudo apt-get install -y default-jre
-          wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
           tar -xzf allure-2.27.0.tgz
           sudo mv allure-2.27.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
-      # 👉 Generate report
       - name: Generate Allure Report
         if: always()
         run: allure generate allure-results --clean -o allure-report
 
-      # 👉 Upload report
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
